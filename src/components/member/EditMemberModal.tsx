@@ -32,6 +32,7 @@ export default function EditMemberModal({ member }: Props) {
   const updateMember = api.member.updateMember.useMutation();
 
   const [open, setOpen] = useState(false);
+  const [callDuplicateCheck, setCallDuplicateCheck] = useState(false);
 
   const [memberName, setMemberName] = useState(member.name);
   const [memberEmail, setMemberEmail] = useState(member.email);
@@ -41,11 +42,12 @@ export default function EditMemberModal({ member }: Props) {
       email: memberEmail
     },
     {
-      enabled: memberEmail !== member.email
+      enabled: callDuplicateCheck
     }
   )
 
   const handleSubmit = async () => {
+    setCallDuplicateCheck(true);
     console.log("duplicate", duplicate)
     console.log(memberEmail !== member.email)
     const data = {
@@ -72,6 +74,7 @@ export default function EditMemberModal({ member }: Props) {
             error: "Failed to update member :("
         })
     }
+    setCallDuplicateCheck(false);
   }
 
   return (
