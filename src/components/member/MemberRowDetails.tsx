@@ -4,38 +4,39 @@ import {
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
-import { Team } from '@prisma/client';
+import { Member } from '@prisma/client';
 import {
     Dialog,
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { format } from 'date-fns';
-import ViewTeamMembers from './ViewTeamMembers';
+// import ViewMembersTeam from './ViewMembersTeam';
 
 type Props = {
-    team: Team;
+    member: Member;
 }
 
-function TeamRowDetails({ team }: Props) {
+function memberRowDetails({ member }: Props) {
   return (
     <Dialog>
     <DialogTrigger>
         <div className="flex items-center justify-items-start">
             <Avatar className="h-9 w-9">
             <AvatarImage src="" alt="Avatar" />
-            <AvatarFallback>{team.name.split(' ').map(word => word[0]).join('').toUpperCase()}</AvatarFallback>
+            <AvatarFallback>{member.name.split(' ').map(word => word[0]).join('').toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="ml-4 space-y-1">
-                <p className="text-sm text-left font-medium leading-none">{team.name}</p>
+                <p className="text-sm text-left font-medium leading-none">{member.name}</p>
+                <p className="text-sm text-left text-muted-foreground">{member.email}</p>
                 <p className="text-sm text-muted-foreground">
-                    Last updated at {format(new Date(team.updatedAt), 'dd-MM-yyyy HH:mm:ss')}
+                    Last updated at {format(new Date(member.updatedAt), 'dd-MM-yyyy HH:mm:ss')}
                 </p>
             </div>
         </div>
     </DialogTrigger>
-    <ViewTeamMembers team={team} />
+    {/* <ViewmemberMembers member={member} /> */}
   </Dialog>
   )
 }
 
-export default TeamRowDetails;
+export default memberRowDetails;
