@@ -11,24 +11,29 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { PlusIcon } from "lucide-react"
+import { PencilIcon } from 'lucide-react';
 import { useState } from "react"
 import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
+import { Team } from "@prisma/client";
 
-export default function CreateTeam() {
-  const createForm = api.team.createTeam.useMutation();
+type Props = {
+    team: Team
+}
 
-  const [teamName, setTeamName] = useState("");
+export default function EditTeamModal({ team }: Props) {
+  const updateTeam = api.team.updateTeam.useMutation();
+
+  const [teamName, setTeamName] = useState(team.name);
 
   const { data: duplicate } = api.team.duplicateTeamCheck.useQuery(
     {
         name: teamName
     },
-    // {
-    //     enabled: !!teamName
-    // }
+    {
+        enabled: teamName !== team.name
+    }
   )
 
   const handleSubmit = async () => {
@@ -36,14 +41,14 @@ export default function CreateTeam() {
     if (duplicate) {
         toast.error("Team name already taken :(");
     } else {
-        toast.promise(createForm.mutateAsync({ name: teamName }), {
-            loading: "Creating team...",
+        toast.promise(updateTeam.mutateAsync({ id: team.id, name: teamName }), {
+            loading: "Updating team...",
             success:  () => {
                 // Reload the page upon successful submission
                 router.replace(`/`).catch(console.error);
-                return "Team created :)";
+                return "Team updated :)";
             },
-            error: "Failed to create team :("
+            error: "Failed to update team :("
         })
     }
   }
@@ -52,14 +57,14 @@ export default function CreateTeam() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost">
-            <PlusIcon />
+            <PencilIcon />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create a new team</DialogTitle>
+          <DialogTitle>Edit Team</DialogTitle>
           <DialogDescription>
-            You can assign team members later.
+            Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -87,12 +92,16 @@ export default function CreateTeam() {
           <DialogClose asChild>
             <Button 
                 type="submit"
-                onClick={() => {
+                onClick={async () => {
+                    if (teamName === team.name) {
+                        toast("No changes detected");
+                        return;
+                    }
                     console.log("teamName", teamName);
                     handleSubmit();
                 }}
             >
-                Create Team
+                Save Changes
             </Button>
           </DialogClose>
         </DialogFooter>

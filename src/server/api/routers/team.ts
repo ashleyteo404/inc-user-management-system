@@ -7,6 +7,20 @@ import {
 } from "~/server/api/trpc";
 
 export const teamRouter = createTRPCRouter({
+  duplicateTeamCheck: publicProcedure
+    .input(
+        z.object({
+            name: z.string().min(1)
+        })
+    )
+    .query(async ({ ctx, input }) => {
+        return await ctx.db.team.findFirst({
+            where: {
+                name: input.name
+            }
+        });
+    }),
+
   createTeam: publicProcedure
     .input(
       z.object({ 
@@ -22,19 +36,21 @@ export const teamRouter = createTRPCRouter({
       return { id: team.id }
     }),
 
-  duplicateTeamCheck: publicProcedure
+  updateTeam: publicProcedure
     .input(
-        z.object({
-            name: z.string().min(1)
-        })
+      z.object({ 
+        id: z.string(),
+        name: z.string().min(1) 
+      })
     )
-    .query(async ({ ctx, input }) => {
-        const duplicate = await ctx.db.team.findFirst({
-            where: {
+    .mutation(async ({ ctx, input }) => {
+        const team = await ctx.db.team.update({
+            where: { id: input.id },
+            data: {
                 name: input.name
             }
         })
-        return { duplicate }
+        return { id: team.id }
     }),
 
   getLatest: protectedProcedure.query(({ ctx }) => {

@@ -7,8 +7,7 @@ import {
 } from "@/components/ui/card"
 import { Team } from '@prisma/client';
 import TeamRow from './TeamRow';
-import { PlusIcon } from 'lucide-react';
-import CreateTeam from './CreateTeam';
+import CreateTeamModal from './CreateTeamModal';
 
 type Props = {
     teams: Team[];
@@ -24,7 +23,7 @@ function ViewAllTeams({ teams }: Props) {
                         Teams
                     </div>
                     <div className="ml-auto">
-                        <CreateTeam />
+                        <CreateTeamModal />
                     </div>
                 </CardTitle>
             </CardHeader>
