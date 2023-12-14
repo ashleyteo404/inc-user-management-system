@@ -11,40 +11,46 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { PlusIcon } from "lucide-react"
+import { PencilIcon } from "lucide-react"
 import { useState } from "react"
 import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
 import { z } from "zod"
+import { Member } from "@prisma/client"
+
+type Props = {
+  member: Member
+}
 
 const schema = z.object({
     name: z.string().min(1),
     email: z.string().min(1).email(),
 });
 
-export default function CreateMemberModal() {
-  const createMember = api.member.createMember.useMutation();
+export default function EditMemberModal({ member }: Props) {
+  const updateMember = api.member.updateMember.useMutation();
 
   const [open, setOpen] = useState(false);
 
-  const [memberName, setMemberName] = useState("");
-  const [memberEmail, setMemberEmail] = useState("");
+  const [memberName, setMemberName] = useState(member.name);
+  const [memberEmail, setMemberEmail] = useState(member.email);
 
   const { data: duplicate } = api.member.duplicateMemberCheck.useQuery(
     {
-        email: memberEmail
+      email: memberEmail
     },
     {
-        enabled: !!memberEmail
+      enabled: memberEmail !== member.email
     }
   )
 
   const handleSubmit = async () => {
     console.log("duplicate", duplicate)
+    console.log(memberEmail !== member.email)
     const data = {
-        name: memberName,
-        email: memberEmail
+      name: memberName,
+      email: memberEmail
     }
     const validationResult = schema.safeParse(data);
 
@@ -52,18 +58,18 @@ export default function CreateMemberModal() {
         const path = validationResult.error.errors[0]?.path[0];
         if (path === "name") toast.error("Please enter a name.");
         else if (path === "email") toast.error("Please enter a valid email.")
-    } else if (duplicate) {
+    } else if (memberEmail !== member.email && duplicate) {
         toast.error("Email already in use :(");
     } else {
-        toast.promise(createMember.mutateAsync(data), {
-            loading: "Adding member...",
+        toast.promise(updateMember.mutateAsync({ id: member.id, ...data }), {
+            loading: "Updating member...",
             success:  () => {
                 // Reload the page upon successful submission
                 router.replace(`/`).catch(console.error);
                 setOpen(false);
-                return "Member added :)";
+                return "Member updated :)";
             },
-            error: "Failed to add member :("
+            error: "Failed to update member :("
         })
     }
   }
@@ -72,14 +78,14 @@ export default function CreateMemberModal() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">
-            <PlusIcon />
+            <PencilIcon />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add a new member</DialogTitle>
+          <DialogTitle>Edit member</DialogTitle>
           <DialogDescription>
-            You can assign member to teams later.
+            Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -118,10 +124,14 @@ export default function CreateMemberModal() {
           <Button 
             type="submit"
             onClick={() => {
-                handleSubmit();
+              if (memberName === member.name && memberEmail === member.email) {
+                toast("No changes detected");
+                return;
+              }
+              handleSubmit();
             }}
           >
-            Add Member
+            Save Changes
           </Button>
         </DialogFooter>
       </DialogContent>
