@@ -12,7 +12,6 @@ export default function Home({ teams }: Props) {
 
   return (
     <>
-      Test
       <ViewAllTeams teams={teams} />
     </>
   );
