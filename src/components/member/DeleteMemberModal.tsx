@@ -13,23 +13,24 @@ import { Trash2Icon } from 'lucide-react';
 import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
+import { Member } from "@prisma/client";
 
 type Props = {
-    teamId: string
+  memberId: string
 }
 
-export default function DeleteTeamModal({ teamId }: Props) {
-  const deleteTeam = api.team.deleteTeam.useMutation();
+export default function DeleteMemberModal({ memberId }: Props) {
+  const deleteMember = api.member.deleteMember.useMutation();
 
   const handleSubmit = async () => {
-    toast.promise(deleteTeam.mutateAsync({ id: teamId }), {
-        loading: "Deleting team...",
+    toast.promise(deleteMember.mutateAsync({ id: memberId }), {
+        loading: "Deleting member...",
         success:  () => {
             // Reload the page upon successful submission
             router.replace(`/`).catch(console.error);
-            return "Team deleted :)";
+            return "Member deleted :)";
         },
-        error: "Failed to delete team :("
+        error: "Failed to delete member :("
     })
   }
 
@@ -44,8 +45,8 @@ export default function DeleteTeamModal({ teamId }: Props) {
         <DialogHeader>
         <DialogTitle>Are you sure absolutely sure?</DialogTitle>
         <DialogDescription>
-            This action cannot be undone. This will permanently delete this team 
-            and remove the team's data from our servers.
+            This action cannot be undone. This will permanently delete this member 
+            and remove the member's data from our servers.
         </DialogDescription>
         </DialogHeader>
         <DialogFooter>

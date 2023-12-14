@@ -18,7 +18,7 @@ function TeamRow({ teams }: Props) {
             <TeamRowDetails team={team} />
             <div className="flex ml-auto space-x-3" >
               <EditTeamModal team={team} />
-              <DeleteTeamModal team={team} />
+              <DeleteTeamModal teamId={team.id} />
             </div>
           </div>
         )

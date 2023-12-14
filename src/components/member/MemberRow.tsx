@@ -1,10 +1,8 @@
 import React from 'react'
 import { Member } from '@prisma/client';
-import { PencilIcon, Trash2Icon } from 'lucide-react';
 import MemberRowDetails from './MemberRowDetails';
 import EditMemberModal from './EditMemberModal';
-// import EditTeamModal from './EditTeamModal';
-// import DeleteTeamModal from './DeleteTeamModal';
+import DeleteMemberModal from './DeleteMemberModal';
 
 type Props = {
     members: Member[];
@@ -19,7 +17,7 @@ function MemberRow({ members }: Props) {
             <MemberRowDetails member={member} />
             <div className="flex ml-auto space-x-3" >
               <EditMemberModal member={member} />
-              <Trash2Icon />
+              <DeleteMemberModal memberId={member.id} />
             </div>
           </div>
         )
