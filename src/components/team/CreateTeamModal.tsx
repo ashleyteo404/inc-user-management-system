@@ -88,7 +88,6 @@ export default function CreateTeamModal() {
             <Button 
                 type="submit"
                 onClick={() => {
-                    console.log("teamName", teamName);
                     handleSubmit();
                 }}
             >

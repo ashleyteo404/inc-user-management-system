@@ -3,6 +3,7 @@ import { Team } from '@prisma/client';
 import { PencilIcon, Trash2Icon } from 'lucide-react';
 import TeamRowDetails from './TeamRowDetails';
 import EditTeamModal from './EditTeamModal';
+import DeleteTeamModal from './DeleteTeamModal';
 
 type Props = {
     teams: Team[];
@@ -17,7 +18,7 @@ function TeamRow({ teams }: Props) {
             <TeamRowDetails team={team} />
             <div className="flex ml-auto space-x-3" >
               <EditTeamModal team={team} />
-              <Trash2Icon />
+              <DeleteTeamModal team={team} />
             </div>
           </div>
         )

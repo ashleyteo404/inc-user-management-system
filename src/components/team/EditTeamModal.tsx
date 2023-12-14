@@ -97,7 +97,6 @@ export default function EditTeamModal({ team }: Props) {
                         toast("No changes detected");
                         return;
                     }
-                    console.log("teamName", teamName);
                     handleSubmit();
                 }}
             >

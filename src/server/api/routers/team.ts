@@ -32,8 +32,8 @@ export const teamRouter = createTRPCRouter({
         data: {
             name: input.name
         }
-      })
-      return { id: team.id }
+      });
+      return { id: team.id };
     }),
 
   updateTeam: publicProcedure
@@ -49,8 +49,21 @@ export const teamRouter = createTRPCRouter({
             data: {
                 name: input.name
             }
-        })
-        return { id: team.id }
+        });
+        return { id: team.id };
+    }),
+
+  deleteTeam: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+        await ctx.db.team.delete({
+            where: { id: input.id }
+        });
+        return { success: true };
     }),
 
   getLatest: protectedProcedure.query(({ ctx }) => {
