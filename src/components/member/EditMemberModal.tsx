@@ -44,7 +44,7 @@ export default function EditMemberModal({ member }: Props) {
         if (path === "name") toast.error("Please enter a name.");
         else if (path === "email") toast.error("Please enter a valid email.")
     } else {
-      toast.promise(updateMember.mutateAsync({ id: member.id, ...data }), {
+      toast.promise(updateMember.mutateAsync({ memberId: member.memberId, ...data }), {
         loading: "Updating member...",
         success: () => {
           // Reload the page upon successful submission

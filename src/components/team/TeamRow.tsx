@@ -11,21 +11,21 @@ type Props = {
     teams: Team[];
 }
 
-function TeamRow({ teams }: Props) {
+export default function TeamRow({ teams }: Props) {
   return (
     <div className="space-y-8">
       {teams.map((team) => {
         return (
-          <div key={team.id} className="flex items-center">
+          <div key={team.teamId} className="flex items-center">
             <TeamRowDetails team={team} />
             <div className="flex ml-auto space-x-3" >
-              <Link href={`/team/${team.id}`}>
+              <Link href={`/team/${team.teamId}`}>
                 <Button variant="outline">
                   View Members
                 </Button>
               </Link>
               <EditTeamModal team={team} />
-              <DeleteTeamModal teamId={team.id} />
+              <DeleteTeamModal teamId={team.teamId} />
             </div>
           </div>
         )
@@ -33,5 +33,3 @@ function TeamRow({ teams }: Props) {
     </div>
   )
 }
-
-export default TeamRow;

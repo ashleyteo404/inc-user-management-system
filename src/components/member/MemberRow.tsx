@@ -8,16 +8,16 @@ type Props = {
     members: Member[];
 }
 
-function MemberRow({ members }: Props) {
+export default function MemberRow({ members }: Props) {
   return (
     <div className="space-y-8">
       {members.map((member) => {
         return (
-          <div key={member.id} className="flex items-center">
+          <div key={member.memberId} className="flex items-center">
             <MemberRowDetails member={member} />
             <div className="flex ml-auto space-x-3" >
               <EditMemberModal member={member} />
-              <DeleteMemberModal memberId={member.id} />
+              <DeleteMemberModal memberId={member.memberId} />
             </div>
           </div>
         )
@@ -25,5 +25,3 @@ function MemberRow({ members }: Props) {
     </div>
   )
 }
-
-export default MemberRow;

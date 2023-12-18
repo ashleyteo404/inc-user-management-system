@@ -16,7 +16,7 @@ type Props = {
     team: Team;
 }
 
-function TeamRowDetails({ team }: Props) {
+export default function TeamRowDetails({ team }: Props) {
   return (
     <Dialog>
     <DialogTrigger>
@@ -38,5 +38,3 @@ function TeamRowDetails({ team }: Props) {
   </Dialog>
   )
 }
-
-export default TeamRowDetails;

@@ -24,7 +24,7 @@ export const memberRouter = createTRPCRouter({
             email: input.email
           }
         });
-        return { id: member.id };  
+        return { memberId: member.memberId };  
       } catch (error) {
         // P2002 is the error code a unique constraint violation
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
@@ -38,7 +38,7 @@ export const memberRouter = createTRPCRouter({
   updateMember: publicProcedure
     .input(
       z.object({ 
-        id: z.string(),
+        memberId: z.string(),
         name: z.string().min(1),
         email: z.string().min(1).email()
       })
@@ -46,13 +46,13 @@ export const memberRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const member = await ctx.db.member.update({
-          where: { id: input.id },
+          where: { memberId: input.memberId },
           data: {
             name: input.name,
             email: input.email
           }
         });
-        return { id: member.id };
+        return { id: member.memberId };
       } catch (error) {
         // P2002 is the error code a unique constraint violation
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
@@ -66,13 +66,13 @@ export const memberRouter = createTRPCRouter({
   deleteMember: publicProcedure
     .input(
       z.object({
-        id: z.string(),
+        memberId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       try {
         await ctx.db.member.delete({
-          where: { id: input.id }
+          where: { memberId: input.memberId }
         });
         return { success: true };
       } catch (error) {

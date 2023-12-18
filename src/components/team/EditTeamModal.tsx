@@ -28,21 +28,10 @@ export default function EditTeamModal({ team }: Props) {
   const updateTeam = api.team.updateTeam.useMutation();
 
   const [open, setOpen] = useState(false);
-  // const [callDuplicateCheck, setCallDuplicateCheck] = useState(false);
 
   const [teamName, setTeamName] = useState(team.name);
 
-  // const { data: duplicate } = api.team.duplicateTeamCheck.useQuery(
-  //   {
-  //       name: teamName
-  //   },
-  //   {
-  //       enabled: callDuplicateCheck
-  //   }
-  // )
-
   const handleSubmit = async () => {
-    // setCallDuplicateCheck(true);
     const data = {
       name: teamName,
     }
@@ -51,10 +40,8 @@ export default function EditTeamModal({ team }: Props) {
     if (!validationResult.success) {
       const path = validationResult.error.errors[0]?.path[0];
       if (path === "name") toast.error("Please enter a name.");
-    // } else if (duplicate) {
-    //   toast.error("Team name already taken :(");
     } else {
-      toast.promise(updateTeam.mutateAsync({ id: team.id, ...data }), {
+      toast.promise(updateTeam.mutateAsync({ teamId: team.teamId, ...data }), {
         loading: "Updating team...",
         success:  () => {
           // Reload the page upon successful submission
@@ -71,7 +58,6 @@ export default function EditTeamModal({ team }: Props) {
         }
       })
     }
-    // setCallDuplicateCheck(false);
   }
 
   return (

@@ -16,7 +16,7 @@ type Props = {
     member: Member;
 }
 
-function memberRowDetails({ member }: Props) {
+export default function memberRowDetails({ member }: Props) {
   return (
     <Dialog>
     <DialogTrigger>
@@ -38,5 +38,3 @@ function memberRowDetails({ member }: Props) {
   </Dialog>
   )
 }
-
-export default memberRowDetails;

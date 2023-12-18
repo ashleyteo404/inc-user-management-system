@@ -1,5 +1,6 @@
 import type { Member, Team } from "@prisma/client";
 import { GetServerSideProps } from "next";
+import Navbar from "~/components/Navbar";
 import ViewAllMembers from "~/components/member/ViewAllMembers";
 import ViewAllTeams from "~/components/team/ViewAllTeams";
 import { db } from "~/server/db";
@@ -11,14 +12,17 @@ type Props = {
 
 export default function Home({ teams, members }: Props) {
   return (
-    <div className="flex mt-2">
-      <div className="flex-grow m-2">
-        <ViewAllTeams teams={teams} />
+    <>
+      <Navbar />
+      <div className="flex mt-2">
+        <div className="flex-grow m-2">
+          <ViewAllTeams teams={teams} />
+        </div>
+        <div className="flex-grow m-2">
+          <ViewAllMembers members={members} />
+        </div>
       </div>
-      <div className="flex-grow m-2">
-        <ViewAllMembers members={members} />
-      </div>
-    </div>
+    </>
   );
 }
 

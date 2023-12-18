@@ -13,7 +13,7 @@ type Props = {
     teams: Team[];
 }
 
-function ViewAllTeams({ teams }: Props) {
+export default function ViewAllTeams({ teams }: Props) {
   return (
     <>
         <Card>
@@ -34,5 +34,3 @@ function ViewAllTeams({ teams }: Props) {
     </>
   )
 }
-
-export default ViewAllTeams

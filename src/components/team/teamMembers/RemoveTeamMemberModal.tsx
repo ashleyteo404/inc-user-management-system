@@ -16,25 +16,24 @@ import router from "next/router"
 import { TRPCClientError } from "@trpc/client";
 
 type Props = {
-  memberId: string
+  teamMemberId: string
 }
 
-export default function DeleteMemberModal({ memberId }: Props) {
-  const deleteMember = api.member.deleteMember.useMutation();
+export default function RemoveTeamMemberModal({ teamMemberId }: Props) {
+  const removeTeamMember = api.teamMember.removeTeamMember.useMutation();
 
   const handleSubmit = async () => {
-    toast.promise(deleteMember.mutateAsync({ memberId: memberId }), {
-        loading: "Deleting member...",
+    toast.promise(removeTeamMember.mutateAsync({ teamMemberId: teamMemberId }), {
+        loading: "Removing member...",
         success:  () => {
-            // Reload the page upon successful submission
-            router.replace(`/`).catch(console.error);
-            return "Member deleted :)";
+          router.reload();
+          return "Member removed from team :)";
         },
         error: (error) => { 
           if (error instanceof TRPCClientError) {
             return error.message;
           } else {
-            return "Failed to delete member :(";
+            return "Failed to remove member from team :(";
           }
         }
     })
@@ -51,8 +50,7 @@ export default function DeleteMemberModal({ memberId }: Props) {
         <DialogHeader>
         <DialogTitle>Are you sure absolutely sure?</DialogTitle>
         <DialogDescription>
-            This action cannot be undone. This will permanently delete this member 
-            and remove the member's data from our servers.
+            You can still add this member back to this team if need be later.
         </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -71,7 +69,7 @@ export default function DeleteMemberModal({ memberId }: Props) {
                     handleSubmit();
                 }}
             >
-                Delete
+                Remove Member
             </Button>
             </DialogClose>
         </DialogFooter>

@@ -23,7 +23,7 @@ export default function DeleteTeamModal({ teamId }: Props) {
   const deleteTeam = api.team.deleteTeam.useMutation();
 
   const handleSubmit = async () => {
-    toast.promise(deleteTeam.mutateAsync({ id: teamId }), {
+    toast.promise(deleteTeam.mutateAsync({ teamId: teamId }), {
         loading: "Deleting team...",
         success:  () => {
             // Reload the page upon successful submission
