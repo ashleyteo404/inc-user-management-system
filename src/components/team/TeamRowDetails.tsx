@@ -10,7 +10,6 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { format } from 'date-fns';
-// import ViewTeamMembers from './ViewTeamMembers';
 
 type Props = {
     team: Team;
@@ -34,7 +33,6 @@ export default function TeamRowDetails({ team }: Props) {
             </div>
         </div>
     </DialogTrigger>
-    {/* <ViewTeamMembers team={team} /> */}
   </Dialog>
   )
 }

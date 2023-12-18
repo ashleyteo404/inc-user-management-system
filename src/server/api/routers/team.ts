@@ -20,7 +20,7 @@ export const teamRouter = createTRPCRouter({
         const team = await ctx.db.team.create({
           data: {
             name: input.name,
-            description: input.description
+            description: input.description?.trim() !== "" ? input.description : null
           }
         });
         return { id: team.teamId };  
@@ -33,7 +33,8 @@ export const teamRouter = createTRPCRouter({
     .input(
       z.object({ 
         teamId: z.string(),
-        name: z.string().min(1) 
+        name: z.string().min(1),
+        description: z.string().nullable()
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -41,7 +42,8 @@ export const teamRouter = createTRPCRouter({
         const team = await ctx.db.team.update({
           where: { teamId: input.teamId },
           data: {
-            name: input.name
+            name: input.name,
+            description: input.description?.trim() !== "" ? input.description : null
           }
         });
         return { id: team.teamId };

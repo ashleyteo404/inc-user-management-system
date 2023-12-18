@@ -23,6 +23,7 @@ export default function TeamMembersTable ({ team, members }: Props) {
   console.log("member", members[2])
 
   return (
+    <div className="m-4">
       <Table>
         <TableCaption>{team.name}'s Members</TableCaption>
         <TableHeader>
@@ -50,6 +51,7 @@ export default function TeamMembersTable ({ team, members }: Props) {
           </TableRow>
         </TableFooter>
       </Table>
+    </div>
   )
 }
 

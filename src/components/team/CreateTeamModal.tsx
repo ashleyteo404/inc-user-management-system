@@ -34,6 +34,7 @@ export default function CreateTeamModal() {
     if (!validationResult.success) {
       const path = validationResult.error.errors[0]?.path[0];
       if (path === "name") toast.error("Please enter a name.");
+      return;
     } else {
       toast.promise(createTeam.mutateAsync(data), {
         loading: "Creating team...",
@@ -85,7 +86,7 @@ export default function CreateTeamModal() {
               Description
             </Label>
             <Input
-              id="name"
+              id="description"
               className="col-span-3"
               value={descriptionName}
               onChange={(e) => setDescriptionName(e.target.value)}

@@ -30,16 +30,19 @@ export default function EditTeamModal({ team }: Props) {
   const [open, setOpen] = useState(false);
 
   const [teamName, setTeamName] = useState(team.name);
+  const [descriptionName, setDescriptionName] = useState(team.description ? team.description : "");
 
   const handleSubmit = async () => {
     const data = {
       name: teamName,
+      description: descriptionName
     }
     const validationResult = teamSchema.safeParse(data);
 
     if (!validationResult.success) {
       const path = validationResult.error.errors[0]?.path[0];
       if (path === "name") toast.error("Please enter a name.");
+      return;
     } else {
       toast.promise(updateTeam.mutateAsync({ teamId: team.teamId, ...data }), {
         loading: "Updating team...",
@@ -86,6 +89,17 @@ export default function EditTeamModal({ team }: Props) {
               onChange={(e) => setTeamName(e.target.value)}
             />
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Description
+            </Label>
+            <Input
+              id="description"
+              className="col-span-3"
+              value={descriptionName}
+              onChange={(e) => setDescriptionName(e.target.value)}
+            />
+          </div>
         </div>
         <DialogFooter>
           <DialogClose asChild>
@@ -99,7 +113,7 @@ export default function EditTeamModal({ team }: Props) {
           <Button 
               type="submit"
               onClick={async () => {
-                  if (teamName === team.name) {
+                  if (teamName === team.name && descriptionName === team.description) {
                       toast("No changes detected");
                       return;
                   }
