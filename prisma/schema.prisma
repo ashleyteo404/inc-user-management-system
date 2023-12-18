@@ -20,6 +20,7 @@ model Team {
     updatedAt DateTime @updatedAt
 
     name      String
+    description String?
 
     member    TeamMember[]
 }
@@ -30,7 +31,7 @@ model Member {
     updatedAt DateTime @updatedAt
 
     name      String
-    email     String
+    email     String   @unique
 
     team      TeamMember[]
 }

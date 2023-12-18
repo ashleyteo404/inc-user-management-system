@@ -10,9 +10,6 @@ type Props = {
 }
 
 export default function Home({ teams, members }: Props) {
-  console.log("teams", teams);
-  console.log("members", members);
-
   return (
     <div className="flex mt-2">
       <div className="flex-grow m-2">
@@ -25,7 +22,7 @@ export default function Home({ teams, members }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async ({}) => {
   const allTeams = await db.team.findMany({
     orderBy: {
       name: "asc"

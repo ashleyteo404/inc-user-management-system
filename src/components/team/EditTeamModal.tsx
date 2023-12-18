@@ -17,6 +17,8 @@ import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
 import { Team } from "@prisma/client";
+import { teamSchema } from "~/types/schema";
+import { TRPCClientError } from "@trpc/client";
 
 type Props = {
     team: Team
@@ -25,36 +27,55 @@ type Props = {
 export default function EditTeamModal({ team }: Props) {
   const updateTeam = api.team.updateTeam.useMutation();
 
+  const [open, setOpen] = useState(false);
+  // const [callDuplicateCheck, setCallDuplicateCheck] = useState(false);
+
   const [teamName, setTeamName] = useState(team.name);
 
-  const { data: duplicate } = api.team.duplicateTeamCheck.useQuery(
-    {
-        name: teamName
-    },
-    {
-        enabled: teamName !== team.name
-    }
-  )
+  // const { data: duplicate } = api.team.duplicateTeamCheck.useQuery(
+  //   {
+  //       name: teamName
+  //   },
+  //   {
+  //       enabled: callDuplicateCheck
+  //   }
+  // )
 
   const handleSubmit = async () => {
-    console.log("duplicate", duplicate)
-    if (duplicate) {
-        toast.error("Team name already taken :(");
-    } else {
-        toast.promise(updateTeam.mutateAsync({ id: team.id, name: teamName }), {
-            loading: "Updating team...",
-            success:  () => {
-                // Reload the page upon successful submission
-                router.replace(`/`).catch(console.error);
-                return "Team updated :)";
-            },
-            error: "Failed to update team :("
-        })
+    // setCallDuplicateCheck(true);
+    const data = {
+      name: teamName,
     }
+    const validationResult = teamSchema.safeParse(data);
+
+    if (!validationResult.success) {
+      const path = validationResult.error.errors[0]?.path[0];
+      if (path === "name") toast.error("Please enter a name.");
+    // } else if (duplicate) {
+    //   toast.error("Team name already taken :(");
+    } else {
+      toast.promise(updateTeam.mutateAsync({ id: team.id, ...data }), {
+        loading: "Updating team...",
+        success:  () => {
+          // Reload the page upon successful submission
+          router.replace(`/`).catch(console.error);
+          setOpen(false);
+          return "Team updated :)";
+        },
+        error: (error) => { 
+          if (error instanceof TRPCClientError) {
+            return error.message;
+          } else {
+            return "Failed to update team :(";
+          }
+        }
+      })
+    }
+    // setCallDuplicateCheck(false);
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">
             <PencilIcon />
@@ -89,20 +110,18 @@ export default function EditTeamModal({ team }: Props) {
                 Cancel
             </Button>
           </DialogClose>
-          <DialogClose asChild>
-            <Button 
-                type="submit"
-                onClick={async () => {
-                    if (teamName === team.name) {
-                        toast("No changes detected");
-                        return;
-                    }
-                    handleSubmit();
-                }}
-            >
-                Save Changes
-            </Button>
-          </DialogClose>
+          <Button 
+              type="submit"
+              onClick={async () => {
+                  if (teamName === team.name) {
+                      toast("No changes detected");
+                      return;
+                  }
+                  handleSubmit();
+              }}
+          >
+              Save Changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

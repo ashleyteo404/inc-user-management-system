@@ -17,11 +17,8 @@ import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
 import { z } from "zod"
-
-const schema = z.object({
-    name: z.string().min(1),
-    email: z.string().min(1).email(),
-});
+import { memberSchema } from "~/types/schema"
+import { TRPCClientError } from "@trpc/client"
 
 export default function CreateMemberModal() {
   const createMember = api.member.createMember.useMutation();
@@ -31,29 +28,17 @@ export default function CreateMemberModal() {
   const [memberName, setMemberName] = useState("");
   const [memberEmail, setMemberEmail] = useState("");
 
-  const { data: duplicate } = api.member.duplicateMemberCheck.useQuery(
-    {
-        email: memberEmail
-    },
-    {
-        enabled: !!memberEmail
-    }
-  )
-
   const handleSubmit = async () => {
-    console.log("duplicate", duplicate)
     const data = {
         name: memberName,
         email: memberEmail
     }
-    const validationResult = schema.safeParse(data);
+    const validationResult = memberSchema.safeParse(data);
 
     if (!validationResult.success) {
         const path = validationResult.error.errors[0]?.path[0];
         if (path === "name") toast.error("Please enter a name.");
         else if (path === "email") toast.error("Please enter a valid email.")
-    } else if (duplicate) {
-        toast.error("Email already in use :(");
     } else {
         toast.promise(createMember.mutateAsync(data), {
             loading: "Adding member...",
@@ -63,7 +48,13 @@ export default function CreateMemberModal() {
                 setOpen(false);
                 return "Member added :)";
             },
-            error: "Failed to add member :("
+            error: (error) => { 
+              if (error instanceof TRPCClientError) {
+                return error.message;
+              } else {
+                return "Failed to add member :(";
+              }
+            }
         })
     }
   }

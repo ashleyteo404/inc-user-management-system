@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+import { TRPCClientError } from "@trpc/client";
 import { z } from "zod";
 
 import {
@@ -7,20 +9,6 @@ import {
 } from "~/server/api/trpc";
 
 export const memberRouter = createTRPCRouter({
-  duplicateMemberCheck: publicProcedure
-    .input(
-      z.object({
-        email: z.string().min(1).email()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      return await ctx.db.member.findFirst({
-        where: {
-          email: input.email
-        }
-      });
-    }),
-
   createMember: publicProcedure
     .input(
       z.object({ 
@@ -29,13 +17,22 @@ export const memberRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const member = await ctx.db.member.create({
-        data: {
-          name: input.name,
-          email: input.email
+      try {
+        const member = await ctx.db.member.create({
+          data: {
+            name: input.name,
+            email: input.email
+          }
+        });
+        return { id: member.id };  
+      } catch (error) {
+        // P2002 is the error code a unique constraint violation
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+          throw new Error("Email already in use :(");
+        } else {
+          throw new Error("Failed to add member :(");
         }
-      });
-      return { id: member.id };
+      }
     }),
 
   updateMember: publicProcedure
@@ -47,14 +44,23 @@ export const memberRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-        const team = await ctx.db.member.update({
-            where: { id: input.id },
-            data: {
-              name: input.name,
-              email: input.email
-            }
+      try {
+        const member = await ctx.db.member.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+            email: input.email
+          }
         });
-        return { id: team.id };
+        return { id: member.id };
+      } catch (error) {
+        // P2002 is the error code a unique constraint violation
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+          throw new Error("Email already in use :(");
+        } else {
+          throw new Error("Failed to update member :(");
+        }
+      }
     }),
 
   deleteMember: publicProcedure
@@ -64,10 +70,14 @@ export const memberRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      try {
         await ctx.db.member.delete({
-            where: { id: input.id }
+          where: { id: input.id }
         });
         return { success: true };
+      } catch (error) {
+        throw new Error("Failed to delete member :(");
+      }
     }),
 
 });

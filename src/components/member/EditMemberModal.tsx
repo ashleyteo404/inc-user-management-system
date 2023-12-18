@@ -18,63 +18,49 @@ import { toast } from "sonner"
 import router from "next/router"
 import { z } from "zod"
 import { Member } from "@prisma/client"
+import { memberSchema } from "~/types/schema"
+import { TRPCClientError } from "@trpc/client"
 
 type Props = {
   member: Member
 }
 
-const schema = z.object({
-    name: z.string().min(1),
-    email: z.string().min(1).email(),
-});
-
 export default function EditMemberModal({ member }: Props) {
   const updateMember = api.member.updateMember.useMutation();
 
   const [open, setOpen] = useState(false);
-  const [callDuplicateCheck, setCallDuplicateCheck] = useState(false);
 
   const [memberName, setMemberName] = useState(member.name);
   const [memberEmail, setMemberEmail] = useState(member.email);
 
-  const { data: duplicate } = api.member.duplicateMemberCheck.useQuery(
-    {
-      email: memberEmail
-    },
-    {
-      enabled: callDuplicateCheck
-    }
-  )
-
   const handleSubmit = async () => {
-    setCallDuplicateCheck(true);
-    console.log("duplicate", duplicate)
-    console.log(memberEmail !== member.email)
     const data = {
       name: memberName,
       email: memberEmail
     }
-    const validationResult = schema.safeParse(data);
-
+    const validationResult = memberSchema.safeParse(data);
     if (!validationResult.success) {
         const path = validationResult.error.errors[0]?.path[0];
         if (path === "name") toast.error("Please enter a name.");
         else if (path === "email") toast.error("Please enter a valid email.")
-    } else if (memberEmail !== member.email && duplicate) {
-        toast.error("Email already in use :(");
     } else {
-        toast.promise(updateMember.mutateAsync({ id: member.id, ...data }), {
-            loading: "Updating member...",
-            success:  () => {
-                // Reload the page upon successful submission
-                router.replace(`/`).catch(console.error);
-                setOpen(false);
-                return "Member updated :)";
-            },
-            error: "Failed to update member :("
-        })
+      toast.promise(updateMember.mutateAsync({ id: member.id, ...data }), {
+        loading: "Updating member...",
+        success: () => {
+          // Reload the page upon successful submission
+          router.replace(`/`).catch(console.error);
+          setOpen(false);
+          return "Member updated :)";
+        },
+        error: (error) => { 
+          if (error instanceof TRPCClientError) {
+            return error.message;
+          } else {
+            return "Failed to update member :(";
+          }
+        }
+      })
     }
-    setCallDuplicateCheck(false);
   }
 
   return (

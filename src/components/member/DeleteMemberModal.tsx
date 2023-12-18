@@ -13,7 +13,7 @@ import { Trash2Icon } from 'lucide-react';
 import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
-import { Member } from "@prisma/client";
+import { TRPCClientError } from "@trpc/client";
 
 type Props = {
   memberId: string
@@ -30,7 +30,13 @@ export default function DeleteMemberModal({ memberId }: Props) {
             router.replace(`/`).catch(console.error);
             return "Member deleted :)";
         },
-        error: "Failed to delete member :("
+        error: (error) => { 
+          if (error instanceof TRPCClientError) {
+            return error.message;
+          } else {
+            return "Failed to delete member :(";
+          }
+        }
     })
   }
 

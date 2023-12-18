@@ -10,7 +10,7 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { format } from 'date-fns';
-import ViewTeamMembers from './ViewTeamMembers';
+// import ViewTeamMembers from './ViewTeamMembers';
 
 type Props = {
     team: Team;
@@ -27,13 +27,14 @@ function TeamRowDetails({ team }: Props) {
             </Avatar>
             <div className="ml-4 space-y-1">
                 <p className="text-sm text-left font-medium leading-none">{team.name}</p>
+                <p className="text-sm text-left text-muted-foreground">{team.description}</p>
                 <p className="text-sm text-muted-foreground">
                     Last updated at {format(new Date(team.updatedAt), 'dd-MM-yyyy HH:mm:ss')}
                 </p>
             </div>
         </div>
     </DialogTrigger>
-    <ViewTeamMembers team={team} />
+    {/* <ViewTeamMembers team={team} /> */}
   </Dialog>
   )
 }

@@ -13,6 +13,7 @@ import { Trash2Icon } from 'lucide-react';
 import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
+import { TRPCClientError } from "@trpc/client";
 
 type Props = {
     teamId: string
@@ -29,7 +30,13 @@ export default function DeleteTeamModal({ teamId }: Props) {
             router.replace(`/`).catch(console.error);
             return "Team deleted :)";
         },
-        error: "Failed to delete team :("
+        error: (error) => { 
+          if (error instanceof TRPCClientError) {
+            return error.message;
+          } else {
+            return "Failed to delete team :(";
+          }
+        }
     })
   }
 

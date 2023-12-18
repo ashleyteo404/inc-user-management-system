@@ -16,35 +16,40 @@ import { useState } from "react"
 import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
+import { teamSchema } from "~/types/schema"
+import { TRPCClientError } from "@trpc/client"
 
 export default function CreateTeamModal() {
   const createTeam = api.team.createTeam.useMutation();
 
   const [teamName, setTeamName] = useState("");
-
-  const { data: duplicate } = api.team.duplicateTeamCheck.useQuery(
-    {
-        name: teamName
-    },
-    {
-        enabled: !!teamName
-    }
-  )
+  const [descriptionName, setDescriptionName] = useState("");
 
   const handleSubmit = async () => {
-    console.log("duplicate", duplicate)
-    if (duplicate) {
-        toast.error("Team name already taken :(");
+    const data = {
+      name: teamName,
+      description: descriptionName
+    }
+    const validationResult = teamSchema.safeParse(data);
+    if (!validationResult.success) {
+      const path = validationResult.error.errors[0]?.path[0];
+      if (path === "name") toast.error("Please enter a name.");
     } else {
-        toast.promise(createTeam.mutateAsync({ name: teamName }), {
-            loading: "Creating team...",
-            success:  () => {
-                // Reload the page upon successful submission
-                router.replace(`/`).catch(console.error);
-                return "Team created :)";
-            },
-            error: "Failed to create team :("
-        })
+      toast.promise(createTeam.mutateAsync(data), {
+        loading: "Creating team...",
+        success:  () => {
+          // Reload the page upon successful submission
+          router.replace(`/`).catch(console.error);
+          return "Team created :)";
+        },
+        error: (error) => { 
+          if (error instanceof TRPCClientError) {
+            return error.message;
+          } else {
+            return "Failed to create team :(";
+          }
+        }
+      })
     }
   }
 
@@ -72,6 +77,17 @@ export default function CreateTeamModal() {
               className="col-span-3"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Description
+            </Label>
+            <Input
+              id="name"
+              className="col-span-3"
+              value={descriptionName}
+              onChange={(e) => setDescriptionName(e.target.value)}
             />
           </div>
         </div>
