@@ -66,7 +66,7 @@ export default function RemoveTeamMemberModal({ teamMemberId }: Props) {
             <Button 
                 type="submit"
                 onClick={async () => {
-                    handleSubmit();
+                  await handleSubmit();
                 }}
             >
                 Remove Member

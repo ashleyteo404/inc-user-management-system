@@ -41,7 +41,6 @@ export default function CreateTeamModal() {
         success:  () => {
           // Reload the page upon successful submission
           router.replace(`/`).catch(console.error);
-          // why is router.reload(); slower
           return "Team created :)";
         },
         error: (error) => { 
@@ -105,8 +104,8 @@ export default function CreateTeamModal() {
           <DialogClose asChild>
             <Button 
                 type="submit"
-                onClick={() => {
-                    handleSubmit();
+                onClick={async () => {
+                  await handleSubmit();
                 }}
             >
                 Create Team

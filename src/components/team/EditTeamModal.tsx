@@ -16,7 +16,7 @@ import { useState } from "react"
 import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
-import { Team } from "@prisma/client";
+import type { Team } from "@prisma/client";
 import { teamSchema } from "~/types/schema";
 import { TRPCClientError } from "@trpc/client";
 
@@ -117,7 +117,7 @@ export default function EditTeamModal({ team }: Props) {
                       toast("No changes detected");
                       return;
                   }
-                  handleSubmit();
+                  await handleSubmit();
               }}
           >
               Save Changes

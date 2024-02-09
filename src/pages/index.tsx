@@ -1,5 +1,5 @@
 import type { Member, Team } from "@prisma/client";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import Navbar from "~/components/Navbar";
 import ViewAllMembers from "~/components/member/ViewAllMembers";
 import ViewAllTeams from "~/components/team/ViewAllTeams";

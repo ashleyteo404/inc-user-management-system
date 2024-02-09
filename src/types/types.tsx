@@ -1,5 +1,3 @@
-import { Member } from "@prisma/client";
-
 export type MemberWithTeamMemberId = {
     memberId: string;
     createdAt: Date;

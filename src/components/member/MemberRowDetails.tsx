@@ -4,7 +4,7 @@ import {
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
-import { Member } from '@prisma/client';
+import type { Member } from '@prisma/client';
 import {
     Dialog,
     DialogTrigger,

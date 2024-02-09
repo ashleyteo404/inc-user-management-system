@@ -1,5 +1,5 @@
 import React from 'react'
-import { Team } from '@prisma/client';
+import type { Team } from '@prisma/client';
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { MemberWithTeamMemberId } from '~/types/types';
+import type { MemberWithTeamMemberId } from '~/types/types';
 import RemoveTeamMemberModal from './RemoveTeamMemberModal';
 
 type Props = {

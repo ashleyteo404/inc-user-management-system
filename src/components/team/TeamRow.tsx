@@ -1,6 +1,5 @@
 import React from 'react'
-import { Team } from '@prisma/client';
-import { PencilIcon, Trash2Icon } from 'lucide-react';
+import type { Team } from '@prisma/client';
 import TeamRowDetails from './TeamRowDetails';
 import EditTeamModal from './EditTeamModal';
 import DeleteTeamModal from './DeleteTeamModal';

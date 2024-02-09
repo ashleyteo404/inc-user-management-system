@@ -5,7 +5,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Team } from '@prisma/client';
+import type { Team } from '@prisma/client';
 import TeamRow from './TeamRow';
 import CreateTeamModal from './CreateTeamModal';
 

@@ -68,7 +68,7 @@ export default function DeleteTeamModal({ teamId }: Props) {
             <Button 
                 type="submit"
                 onClick={async () => {
-                    handleSubmit();
+                  await handleSubmit();
                 }}
             >
                 Delete

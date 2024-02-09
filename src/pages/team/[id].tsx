@@ -1,11 +1,11 @@
 import React from 'react'
-import { GetServerSideProps } from 'next';
-import { ParsedUrlQuery } from 'querystring';
-import { Team, Member } from '@prisma/client';
+import type { GetServerSideProps } from 'next';
+import type { ParsedUrlQuery } from 'querystring';
+import type { Team, Member } from '@prisma/client';
 import { db } from '~/server/db';
 import TeamMembersTable from '~/components/team/teamMembers/TeamMembersTable';
 import AddTeamMember from '~/components/team/teamMembers/AddTeamMember';
-import { MemberWithTeamMemberId } from '~/types/types';
+import type { MemberWithTeamMemberId } from '~/types/types';
 import Navbar from '~/components/Navbar';
 
 type Props = {
