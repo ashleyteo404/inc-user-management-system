@@ -39,6 +39,8 @@ export default function CreateTeamModal() {
       toast.promise(createTeam.mutateAsync(data), {
         loading: "Creating team...",
         success:  () => {
+          setTeamName("");
+          setDescriptionName("");
           // Reload the page upon successful submission
           router.replace(`/`).catch(console.error);
           return "Team created :)";

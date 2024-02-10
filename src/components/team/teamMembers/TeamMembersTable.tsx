@@ -47,7 +47,7 @@ export default function TeamMembersTable ({ team, members }: Props) {
         <TableFooter>
           <TableRow>
             <TableCell colSpan={3}>Total Members</TableCell>
-            <TableCell className="text-right">{members.length}</TableCell>
+            <TableCell className="text-right">{members.length ? members.length : 0}</TableCell>
           </TableRow>
         </TableFooter>
       </Table>

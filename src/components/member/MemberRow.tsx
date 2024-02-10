@@ -1,5 +1,5 @@
 import React from 'react'
-import { Member } from '@prisma/client';
+import type { Member } from '@prisma/client';
 import MemberRowDetails from './MemberRowDetails';
 import EditMemberModal from './EditMemberModal';
 import DeleteMemberModal from './DeleteMemberModal';

@@ -1,10 +1,6 @@
 import Link from "next/link";
 import React from "react";
 
-// import UserAccountNav from "./UserAccountNav";
-// import { ThemeToggle } from "./ThemeToggle";
-import type { User } from "next-auth";
-
 const Navbar = () => {
   return (
     <>

@@ -16,8 +16,7 @@ import { useState } from "react"
 import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
-import { z } from "zod"
-import { Member } from "@prisma/client"
+import type { Member } from "@prisma/client"
 import { memberSchema } from "~/types/schema"
 import { TRPCClientError } from "@trpc/client"
 
@@ -112,12 +111,12 @@ export default function EditMemberModal({ member }: Props) {
           </DialogClose>
           <Button 
             type="submit"
-            onClick={() => {
+            onClick={async () => {
               if (memberName === member.name && memberEmail === member.email) {
                 toast("No changes detected");
                 return;
               }
-              handleSubmit();
+              await handleSubmit();
             }}
           >
             Save Changes

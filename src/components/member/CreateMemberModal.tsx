@@ -16,7 +16,6 @@ import { useState } from "react"
 import { api } from "~/utils/api"
 import { toast } from "sonner"
 import router from "next/router"
-import { z } from "zod"
 import { memberSchema } from "~/types/schema"
 import { TRPCClientError } from "@trpc/client"
 
@@ -43,6 +42,8 @@ export default function CreateMemberModal() {
         toast.promise(createMember.mutateAsync(data), {
             loading: "Adding member...",
             success:  () => {
+                setMemberName("");
+                setMemberEmail("");
                 // Reload the page upon successful submission
                 router.replace(`/`).catch(console.error);
                 setOpen(false);
@@ -108,8 +109,8 @@ export default function CreateMemberModal() {
           </DialogClose>
           <Button 
             type="submit"
-            onClick={() => {
-                handleSubmit();
+            onClick={async () => {
+              await handleSubmit();
             }}
           >
             Add Member

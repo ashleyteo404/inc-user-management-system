@@ -1,9 +1,7 @@
-import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import {
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 
@@ -60,9 +58,16 @@ export const teamRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        await ctx.db.team.delete({
-          where: { teamId: input.teamId }
-        });
+        await ctx.db.$transaction([
+          ctx.db.teamMember.deleteMany({
+            where: {
+              teamId: input.teamId,
+            },
+          }),
+          ctx.db.team.delete({
+            where: { teamId: input.teamId },
+          }),
+        ]);
         return { success: true };
       } catch (error) {
         throw new Error("Failed to delete team :(");

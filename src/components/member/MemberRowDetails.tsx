@@ -10,7 +10,6 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { format } from 'date-fns';
-// import ViewMembersTeam from './ViewMembersTeam';
 
 type Props = {
     member: Member;

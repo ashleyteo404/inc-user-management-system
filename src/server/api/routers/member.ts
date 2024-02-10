@@ -71,9 +71,16 @@ export const memberRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        await ctx.db.member.delete({
-          where: { memberId: input.memberId }
-        });
+        await ctx.db.$transaction([
+          ctx.db.teamMember.deleteMany({
+            where: {
+              memberId: input.memberId,
+            },
+          }),
+          ctx.db.member.delete({
+            where: { memberId: input.memberId },
+          }),
+        ]);
         return { success: true };
       } catch (error) {
         throw new Error("Failed to delete member :(");

@@ -3,7 +3,6 @@ import { z } from "zod";
 
 import {
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 
@@ -47,7 +46,7 @@ export const teamMemberRouter = createTRPCRouter({
             memberId: true // Include only the memberId in the result
           }
         })
-        if(!memberId) throw new Error("Member does not exist");
+        if(!memberId) throw new Error("Member does not exist :(");
         else {
           const teamMember = await ctx.db.teamMember.create({
             data: {
@@ -62,7 +61,7 @@ export const teamMemberRouter = createTRPCRouter({
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
           throw new Error("Member is already in team :(");
         } else {
-          throw new Error("Failed to add member to team :(");
+          throw error;
         }
       }
     }),
@@ -85,7 +84,7 @@ export const teamMemberRouter = createTRPCRouter({
         }
         return { success: true };
       } catch (error) {
-        throw new Error("Failed to remove member from team :(");
+        throw error;
       }
     }),
 });
