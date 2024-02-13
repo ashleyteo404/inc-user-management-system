@@ -1,7 +1,7 @@
 import React from 'react'
 import type { GetServerSideProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
-import type { Team, Member } from '@prisma/client';
+import type { Team } from '@prisma/client';
 import { db } from '~/server/db';
 import TeamMembersTable from '~/components/team/teamMembers/TeamMembersTable';
 import AddTeamMember from '~/components/team/teamMembers/AddTeamMember';

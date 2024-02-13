@@ -1,10 +1,8 @@
 import { Prisma } from "@prisma/client";
-import { TRPCClientError } from "@trpc/client";
 import { z } from "zod";
 
 import {
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 
