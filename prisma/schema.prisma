@@ -3,6 +3,7 @@
 
 generator client {
     provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-arm64-openssl-1.0.x"]
 }
 
 datasource db {
@@ -51,18 +52,6 @@ model TeamMember {
     @@unique([teamId, memberId])
 }
 
-model Post {
-    id        Int      @id @default(sequence())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -98,7 +87,6 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
 }
 
 model VerificationToken {
